@@ -28,6 +28,8 @@ class Network:
             result.append(output)
 
         return result
+    def show_weights(self):
+        return self.layers
 
     # train the network
     def fit(self, x_train, y_train, epochs, learning_rate):
