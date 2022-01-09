@@ -1,14 +1,19 @@
 import numpy as np
+from keras.layers import *
 from imageio import imread
-from network import Network
-from fc_layer import FCLayer
-from activation_layer import ActivationLayer
-from activations import tanh, tanh_prime
 from math import sqrt
 from skimage.io import imread
 from skimage.transform import resize
 from skimage.feature import hog
-import matplotlib.pyplot as plt
+from keras.preprocessing import image
+# from scipy.misc import imsave
+import  numpy  as  np
+from keras.layers import *
+from keras.applications.vgg16 import preprocess_input
+from keras.layers import Dropout, Flatten, Dense
+# from keras.applications import ResNet50
+from keras.models import Model, Sequential
+from keras.layers import Dense, GlobalAveragePooling2D
 import os,cv2
 #DEF
 #For HOG
@@ -44,26 +49,28 @@ def lbp_calculated_pixel(img, x, y):
 	return val
 
 #---------------------------------<><><><><><><>---------------------------------
-net = Network()
-net.add(FCLayer(16*16, 100))                # input_shape=(1, 16*16)    ;   output_shape=(1, 100)
-net.add(ActivationLayer(tanh, tanh_prime))
-net.add(FCLayer(100, 50))                   # input_shape=(1, 100)      ;   output_shape=(1, 50)
-net.add(ActivationLayer(tanh, tanh_prime))
-net.add(FCLayer(50, 10))                    # input_shape=(1, 50)       ;   output_shape=(1, 10)
-net.add(ActivationLayer(tanh, tanh_prime))
-x = net.show_weights()
-o1 = []
-o2 = []
+model = Sequential()
+model.add(Conv2D(64, kernel_size=(3, 3), input_shape=(240, 320, 3), padding='VALID'))
+model.add(Conv2D(64, kernel_size=(3, 3), padding='VALID'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
-#ANCHOR/Testing
-x = imread('../Testing/ml_00_3.png')
-x = x.reshape(x.shape[0], 1, 16*16)
-x = x.astype('float32')
-x /= 255
-out = net.predict(x)
-for i in out:
-    o1.append(sum(i[0])/10)
-o1 = np.array(o1)
+# Block 2
+model.add(Conv2D(128, kernel_size=(3, 3), strides=1, activation='relu', padding='VALID'))
+model.add(Conv2D(128, kernel_size=(3, 3), strides=1, activation='relu', padding='VALID'))
+model.add(AveragePooling2D(pool_size=(19, 19)))
+
+# set of FC => RELU layers
+model.add(Flatten())
+
+testing_img = '../Testing/fyc_00_3.png'
+img = image.load_img(testing_img, target_size=(240, 320))
+testing_img_data = image.img_to_array(img)
+testing_img_data = np.expand_dims(testing_img_data, axis=0)
+testing_img_data = preprocess_input(testing_img_data)
+
+vgg_feature_1 = model.predict(testing_img_data)
+vgg_feature_1= np.array(vgg_feature_1[0])
+
 # #HOG
 # hog_fd_anchor = get_hog_vec(imread('../Testing/ml_00_3.png'),'Testing.png')
 # #LBP
@@ -87,10 +94,13 @@ for i in files:
     print("--- "+i)
     for img in images:
         print("   --- "+img+" ------------> ",end='')
-        x = imread('../Gait Energy Image/GEI/'+i+'/'+img)
-        x = x.reshape(x.shape[0], 1, 16*16)
-        x = x.astype('float32')
-        x /= 255
+        training_img = '../Gait Energy Image/GEI/'+i+'/'+img
+        img = image.load_img(training_img, target_size=(240, 320))
+        training_img_data = image.img_to_array(img)
+        training_img_data = np.expand_dims(training_img_data, axis=0)
+        training_img_data = preprocess_input(training_img_data)
+        vgg_feature_2 = model.predict(training_img_data)
+        vgg_feature_2= np.array(vgg_feature_2[0])
         #HOG
 #        hog_fd = get_hog_vec(x,i+'_'+img)
         #LBP
@@ -103,18 +113,13 @@ for i in files:
 #            for b in range(0, width):
 #                img_lbp[a, b] = lbp_calculated_pixel(img_gray, a, b)
 #                lbp_fv.append(img_lbp[a, b])
-        out = net.predict(x)
-        for j in out:
-            o2.append(sum(j[0])/10)
-        o2 = np.array(o2)
 #        o2 = np.append(o2,hog_fd)
 #        o2 = np.append(o2,lbp_fv)
-        val = sqrt(sum( (o1 - o2)**2))
+        val = sqrt(sum( (vgg_feature_1 - vgg_feature_2)**2))
         print(val)
         if val<best_val:
             best_val = val
             best=i
-        o2 = []
 print("The best one seems to be with the image:"+best+"\nWith value:"+str(best_val))
 
 

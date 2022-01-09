@@ -71,6 +71,6 @@ for f in files:
 
 
 		print("DONE WITH FILE:",f,sf);
-		# os.mkdir('./GEI/'+f)
+		os.mkdir('./GEI/'+f)
 		plt.imsave("./GEI/"+f+"/"+sf+".png",gei)
 		# plt.show()
