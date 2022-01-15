@@ -61,68 +61,59 @@ model.add(AveragePooling2D(pool_size=(19, 19)))
 
 # set of FC => RELU layers
 model.add(Flatten())
+acc = 1
+final_predictions = []
+for testing_image_file in os.listdir("../Testing"):
+    testing_img = '../Testing/'+testing_image_file
+    img = image.load_img(testing_img, target_size=(240, 320))
+    testing_img_data = image.img_to_array(img)
+    testing_img_data = np.expand_dims(testing_img_data, axis=0)
+    testing_img_data = preprocess_input(testing_img_data)
 
-testing_img = '../Testing/fyc_00_3.png'
-img = image.load_img(testing_img, target_size=(240, 320))
-testing_img_data = image.img_to_array(img)
-testing_img_data = np.expand_dims(testing_img_data, axis=0)
-testing_img_data = preprocess_input(testing_img_data)
-
-vgg_feature_1 = model.predict(testing_img_data)
-vgg_feature_1= np.array(vgg_feature_1[0])
-
-# #HOG
-# hog_fd_anchor = get_hog_vec(imread('../Testing/ml_00_3.png'),'Testing.png')
-# #LBP
-# img_bgr = cv2.imread('../Testing/ml_00_3.png', 1)
-# height, width, _ = img_bgr.shape
-# lbp_fv = []
-# img_gray = cv2.cvtColor(img_bgr,cv2.COLOR_BGR2GRAY)
-# img_lbp = np.zeros((height, width),np.uint8)
-# for i in range(0, height):
-#     for j in range(0, width):
-#         img_lbp[i, j] = lbp_calculated_pixel(img_gray, i, j)
-#         lbp_fv.append(img_lbp[i, j])
-# o1 = np.append(o1,hog_fd_anchor)
-# o1 = np.append(o1,lbp_fv)
-#POSITIVE ANCHOR
-files = os.listdir("../Gait Energy Image/GEI")
-best = ''
-best_val = 10000
-for i in files:
-    images = os.listdir("../Gait Energy Image/GEI/"+i)
-    print("--- "+i)
-    for img in images:
-        print("   --- "+img+" ------------> ",end='')
-        training_img = '../Gait Energy Image/GEI/'+i+'/'+img
-        img = image.load_img(training_img, target_size=(240, 320))
-        training_img_data = image.img_to_array(img)
-        training_img_data = np.expand_dims(training_img_data, axis=0)
-        training_img_data = preprocess_input(training_img_data)
-        vgg_feature_2 = model.predict(training_img_data)
-        vgg_feature_2= np.array(vgg_feature_2[0])
-        #HOG
-#        hog_fd = get_hog_vec(x,i+'_'+img)
-        #LBP
-#        img_bgr = cv2.imread('../Gait Energy Image/GEI/'+i+'/'+img, 1)
-#        height, width, _ = img_bgr.shape
-#        lbp_fv = []
-#        img_gray = cv2.cvtColor(img_bgr,cv2.COLOR_BGR2GRAY)
-#        img_lbp = np.zeros((height, width),np.uint8)
-#        for a in range(0, height):
-#            for b in range(0, width):
-#                img_lbp[a, b] = lbp_calculated_pixel(img_gray, a, b)
-#                lbp_fv.append(img_lbp[a, b])
-#        o2 = np.append(o2,hog_fd)
-#        o2 = np.append(o2,lbp_fv)
-        val = sqrt(sum( (vgg_feature_1 - vgg_feature_2)**2))
-        print(val)
-        if val<best_val:
-            best_val = val
-            best=i
-print("The best one seems to be with the image:"+best+"\nWith value:"+str(best_val))
-
-
+    vgg_feature_1 = model.predict(testing_img_data)
+    vgg_feature_1= np.array(vgg_feature_1[0])
+    files = os.listdir("../Gait Energy Image/GEI")
+    best = ''
+    best_val = 10000
+    for i in files:
+        images = os.listdir("../Gait Energy Image/GEI/"+i)
+        # print("--- "+i)
+        for img in images:
+            # print("   --- "+img+" ------------> ",end='')
+            training_img = '../Gait Energy Image/GEI/'+i+'/'+img
+            img = image.load_img(training_img, target_size=(240, 320))
+            training_img_data = image.img_to_array(img)
+            training_img_data = np.expand_dims(training_img_data, axis=0)
+            training_img_data = preprocess_input(training_img_data)
+            vgg_feature_2 = model.predict(training_img_data)
+            vgg_feature_2= np.array(vgg_feature_2[0])
+            #HOG
+    #        hog_fd = get_hog_vec(x,i+'_'+img)
+            #LBP
+    #        img_bgr = cv2.imread('../Gait Energy Image/GEI/'+i+'/'+img, 1)
+    #        height, width, _ = img_bgr.shape
+    #        lbp_fv = []
+    #        img_gray = cv2.cvtColor(img_bgr,cv2.COLOR_BGR2GRAY)
+    #        img_lbp = np.zeros((height, width),np.uint8)
+    #        for a in range(0, height):
+    #            for b in range(0, width):
+    #                img_lbp[a, b] = lbp_calculated_pixel(img_gray, a, b)
+    #                lbp_fv.append(img_lbp[a, b])
+    #        o2 = np.append(o2,hog_fd)
+    #        o2 = np.append(o2,lbp_fv)
+            val = sqrt(sum( (vgg_feature_1 - vgg_feature_2)**2))
+            # print(val)
+            if val<best_val:
+                best_val = val
+                best=i
+    if testing_image_file.split(".")[0].split("_")[0]==best:
+        acc+=1
+    final_predictions.append((testing_image_file,best,best_val))
+    # print("Tested with:"+testing_image_file.split(".")[0].split("_")[0]+"\tPredicted:"+best+"\tDistance:"+str(best_val))
+print("\n\nTested With\t\t\tPredicted\t\t\tDistance")
+for i in final_predictions:
+    print(i[0].split(".")[0].split("_")[0]+"\t\t\t"+i[1]+"\t\t\t"+str(i[2]))
+print("\nAccuracy:"+str((acc/17)*100)+"%")
 # ------------------------------------------<><><><><><><><><>------------------------------------------
 '''
 #NEGATIVE ANCHOR
