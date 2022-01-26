@@ -14,7 +14,7 @@ from keras.layers import Dropout, Flatten, Dense
 # from keras.applications import ResNet50
 from keras.models import Model, Sequential
 from keras.layers import Dense, GlobalAveragePooling2D
-import os,cv2
+import os,cv2,pickle
 #DEF
 #For HOG
 def get_hog_vec(img,name):
@@ -60,9 +60,21 @@ model.add(Conv2D(128, kernel_size=(3, 3), strides=1, activation='relu', padding=
 model.add(AveragePooling2D(pool_size=(19, 19)))
 
 # set of FC => RELU layers
+os.chdir("../One Shot")
+# print(os.getcwd())
 model.add(Flatten())
+model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+model.save_weights('./models/model_weights.h5')
+model_json = model.to_json()
+with open("./models/model.json", "w") as json_file:
+    json_file.write(model_json)
+json_file.close()    
+f = open('./models/history.pckl', 'wb')
+pickle.dump(model.history, f)
+f.close()
 acc = 1
 final_predictions = []
+f = open("Accuracy.txt","w")
 for testing_image_file in os.listdir("../Testing"):
     testing_img = '../Testing/'+testing_image_file
     img = image.load_img(testing_img, target_size=(240, 320))
@@ -110,10 +122,13 @@ for testing_image_file in os.listdir("../Testing"):
         acc+=1
     final_predictions.append((testing_image_file,best,best_val))
     # print("Tested with:"+testing_image_file.split(".")[0].split("_")[0]+"\tPredicted:"+best+"\tDistance:"+str(best_val))
-print("\n\nTested With\t\t\tPredicted\t\t\tDistance")
+accuracy_results = '''Tested With\t\t\tPredicted\t\t\tDistance\n'''
 for i in final_predictions:
-    print(i[0].split(".")[0].split("_")[0]+"\t\t\t"+i[1]+"\t\t\t"+str(i[2]))
-print("\nAccuracy:"+str((acc/17)*100)+"%")
+    accuracy_results += i[0].split(".")[0].split("_")[0]+"\t\t\t"+i[1]+"\t\t\t"+str(i[2])+"\n"
+accuracy_results += "\nAccuracy:"+str((acc/17)*100)+"%"
+print(accuracy_results)
+f.write(accuracy_results)
+f.close()
 # ------------------------------------------<><><><><><><><><>------------------------------------------
 '''
 #NEGATIVE ANCHOR

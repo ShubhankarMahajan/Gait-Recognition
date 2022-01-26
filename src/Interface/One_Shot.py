@@ -1,11 +1,16 @@
 from tkinter import *
-import subprocess
+import subprocess,os
+from turtle import position
+from PIL import ImageTk, Image
 def choice():
-    one_shot_output = subprocess.run(['python','../Neural Network/main.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    one_shot_output = subprocess.run(['python','../One Shot/main.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
     # one_shot_output = subprocess.run(['python','sub.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
     text.insert(INSERT,one_shot_output)
     text.see(END)
     text.update_idletasks()
+def Go_Home():
+    root.destroy()
+    os.system("main.py")
 root = Tk()
 root.resizable(0,0)
 root.wm_attributes('-transparentcolor','grey')
@@ -14,10 +19,19 @@ root.geometry('720x480')
 root.title("One Shot Learning")
 text=Text(root,height=30,width=90)
 scroll=Scrollbar(text)
+home = Button(root,command=Go_Home)
+home_img = ImageTk.PhotoImage(Image.open("Assests/Home_Button.jpg").resize((35, 35)))
+home.configure(image=home_img)
+home.configure(text='''Home''')
+home.place(x=650,y=55)
 label = Label(root, text="One Shot Learning",font=("Roboto", 25,"bold"))
 label.pack()
-button = Button(root,text="Choose a Gait Energy Image for Recognition",command=choice)
+label = Label(root, text="",font=("Roboto", 15))
+label.pack()
+button = Button(root,text="Display Accuracy",width=50,command=choice)
 button.pack()
+label = Label(root, text="",font=("Roboto", 15))
+label.pack()
 text.configure(yscrollcommand=scroll.set)
 text.config(font="Roboto")
 text.pack()
