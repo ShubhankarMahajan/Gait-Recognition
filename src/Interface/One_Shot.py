@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 import subprocess,os
+from tkinter import font
+from tkinter.font import BOLD
 from turtle import position
 from PIL import ImageTk, Image
 from tkinter import filedialog
@@ -13,7 +15,7 @@ def choice():
     text.update_idletasks()
 def dis_acc():
     one_shot_output = subprocess.run(['python','../One Shot/dis_acc.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    text.insert(INSERT,one_shot_output)
+    text.insert(INSERT,one_shot_output+"\n")
     text.see(END)
     text.update_idletasks()
 def find_gait():

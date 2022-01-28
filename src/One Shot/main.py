@@ -127,7 +127,7 @@ for testing_image_file in os.listdir("../Testing"):
 accuracy_results = '''Tested With\t\t\tPredicted\t\t\tDistance\n'''
 for i in final_predictions:
     accuracy_results += i[0].split(".")[0].split("_")[0]+"\t\t\t"+i[1]+"\t\t\t"+str(i[2])+"\n"
-accuracy_results += "\nAccuracy:"+str((acc/17)*100)+"%"
+accuracy_results += "\nAccuracy:"+str((acc/18)*100)+"%"
 print("Done with creating new CNN Model. Check Accuracy Scores to see the results")
 f.write(accuracy_results)
 f.close()

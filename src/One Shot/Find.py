@@ -80,4 +80,4 @@ for i in f.readlines():
     if val<best_val:
         best_val = val
         best=i.split("<--->")[0].split("-")[0]
-print("Best is ",best,"with a distance of",best_val)
+print("PREDICTED: ",best,"\nDISTANCE: ",best_val,"\n")

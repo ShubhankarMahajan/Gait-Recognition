@@ -2,6 +2,45 @@
 from tkinter import*
 from tkinter import ttk
 import csv,os
+from turtle import width
+from PIL import Image, ImageTk
+from itertools import count, cycle
+class ImageLabel(Label):
+    """
+    A Label that displays images, and plays them if they are gifs
+    :im: A PIL Image instance or a string filename
+    """
+    def load(self, im):
+        if isinstance(im, str):
+            im = Image.open(im)
+        frames = []
+
+        try:
+            for i in count(1):
+                frames.append(ImageTk.PhotoImage(im.copy()))
+                im.seek(i)
+        except EOFError:
+            pass
+        self.frames = cycle(frames)
+
+        try:
+            self.delay = im.info['duration']
+        except:
+            self.delay = 100
+
+        if len(frames) == 1:
+            self.config(image=next(self.frames))
+        else:
+            self.next_frame()
+
+    def unload(self):
+        self.config(image=None)
+        self.frames = None
+
+    def next_frame(self):
+        if self.frames:
+            self.config(image=next(self.frames))
+            self.after(self.delay, self.next_frame)
 def exit():
     root.destroy()
 def compare():
@@ -36,14 +75,19 @@ label = ttk.Label(root, text="Please choose one of the following\n\n")
 label.configure(font=("Roboto", 16, "bold"))
 label.pack()
 # Button(root, text="1. Validate the data",font=("Roboto", 12),command=validate).place(x=290,y=210)
-button = ttk.Button(root, text=" One Shot Learning ",style='my.TButton',command=one_shot)
+button = ttk.Button(root, text=" One Shot Learning ",style='my.TButton',width=50,command=one_shot)
 button.pack()
 label = ttk.Label(root, text="")
 label.pack()
-button = ttk.Button(root, text=" Comparision Gait Recognition with other methods ",style='my.TButton',command=compare)
+button = ttk.Button(root, text=" Comparision Gait Recognition with other methods ",width=50,style='my.TButton',command=compare)
 button.pack()
 label = ttk.Label(root, text="")
 label.pack()
-button = ttk.Button(root, text=" Exit ",style='my.TButton',command=exit)
+button = ttk.Button(root, text=" Exit ",style='my.TButton',width=50,command=exit)
 button.pack()
+label = ttk.Label(root, text="")
+label.pack()
+lbl = ImageLabel(root)
+lbl.pack()
+lbl.load('./Assests/Working.gif')
 root.mainloop()
