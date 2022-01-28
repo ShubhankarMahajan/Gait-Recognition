@@ -4,8 +4,14 @@ from turtle import position
 from PIL import ImageTk, Image
 from tkinter import filedialog
 def choice():
+    print("Hidden Button Clicked! Might take a while")
     one_shot_output = subprocess.run(['python','../One Shot/main.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
     # one_shot_output = subprocess.run(['python','sub.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    text.insert(INSERT,one_shot_output)
+    text.see(END)
+    text.update_idletasks()
+def dis_acc():
+    one_shot_output = subprocess.run(['python','../One Shot/dis_acc.py'], stdout=subprocess.PIPE).stdout.decode('utf-8')
     text.insert(INSERT,one_shot_output)
     text.see(END)
     text.update_idletasks()
@@ -32,11 +38,16 @@ home_img = ImageTk.PhotoImage(Image.open("Assests/Home_Button.jpg").resize((35, 
 home.configure(image=home_img)
 home.configure(text='''Home''')
 home.place(x=650,y=55)
+home = Button(root,command=choice,highlightthickness = 0, bd = 0)
+hidden_img = ImageTk.PhotoImage(Image.open("Assests/Hidden_Button.png").resize((35, 35)))
+home.configure(image=hidden_img)
+home.configure(text='''Actual''')
+home.place(x=650,y=105)
 label = Label(root, text="One Shot Learning",font=("Roboto", 25,"bold"))
 label.pack()
 label = Label(root, text="",font=("Roboto", 15))
 label.pack()
-button = Button(root,text="Display Accuracy",width=50,command=choice)
+button = Button(root,text="Display Accuracy",width=50,command=dis_acc)
 button.pack()
 label = Label(root, text="",font=("Roboto", 15))
 label.pack()
