@@ -15,6 +15,7 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.models import Model, Sequential
 from keras.layers import Dense, GlobalAveragePooling2D
 import os,cv2,pickle
+from Dataset_Values import set_val
 #DEF
 #For HOG
 def get_hog_vec(img,name):
@@ -72,9 +73,10 @@ json_file.close()
 f = open('./models/history.pckl', 'wb')
 pickle.dump(model.history, f)
 f.close()
+set_val()
 acc = 1
 final_predictions = []
-f = open("Accuracy.txt","w")
+f = open("../Interface/Accuracy.txt","w")
 for testing_image_file in os.listdir("../Testing"):
     testing_img = '../Testing/'+testing_image_file
     img = image.load_img(testing_img, target_size=(240, 320))
@@ -126,26 +128,6 @@ accuracy_results = '''Tested With\t\t\tPredicted\t\t\tDistance\n'''
 for i in final_predictions:
     accuracy_results += i[0].split(".")[0].split("_")[0]+"\t\t\t"+i[1]+"\t\t\t"+str(i[2])+"\n"
 accuracy_results += "\nAccuracy:"+str((acc/17)*100)+"%"
-print(accuracy_results)
+print("Done with creating new CNN Model. Check Accuracy Scores to see the results")
 f.write(accuracy_results)
 f.close()
-# ------------------------------------------<><><><><><><><><>------------------------------------------
-'''
-#NEGATIVE ANCHOR
-x = imread('../Gait Energy Image/GEI/fyc/00_1.png')
-x = x.reshape(x.shape[0], 1, 16*16)
-x = x.astype('float32')
-x /= 255
-out = net.predict(x)
-print("\n")
-print("predicted values : ")
-print(len(out))
-for i in out:
-    o2.append(sum(i[0])/10)
-# print(o1)
-# print(o2)
-print("NEGATIVE ANCHOR")
-o1 = np.array(o1)
-o2 = np.array(o2)
-print(sqrt(sum( (o1 - o2)**2)))
-'''
