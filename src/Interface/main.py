@@ -83,7 +83,7 @@ button = ttk.Button(root, text=" One Shot Learning ",style='my.TButton',width=50
 button.pack()
 label = ttk.Label(root, text="")
 label.pack()
-button = ttk.Button(root, text=" Comparision Gait Recognition with other methods ",width=50,style='my.TButton',command=compare)
+button = ttk.Button(root, text=" Compare Gait Recognition with other methods ",width=50,style='my.TButton',command=compare)
 button.pack()
 label = ttk.Label(root, text="")
 label.pack()
