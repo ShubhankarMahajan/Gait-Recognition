@@ -21,4 +21,7 @@ val = sqrt(sum( (vgg_feature_1 - vgg_feature_2)**2))
 ```
 In the end, we find the minimum distance that is generated from the above equation (between anchor and testing images).
 This can be written as:
-<img src="https://latex.codecogs.com/svg.image?\bg_white&space;\min{\sqrt{{\sum_{}^{}}(vgg\_feature\_1&space;-&space;vgg\_feature\_2)^2}}" title="\bg_white \min{\sqrt{{\sum_{}^{}}(vgg\_feature\_1 - vgg\_feature\_2)^2}}" />
+
+<img src="https://render.githubusercontent.com/render/math?math={\color{grey}\sqrt{\sum_{}(vgg\_feature\_1-%20vgg\_feature\_2)%20+%20^2}}">
+
+The testing image with the lowest distance between itself and the anchor image is determinted to be our expected person's Gait image.
