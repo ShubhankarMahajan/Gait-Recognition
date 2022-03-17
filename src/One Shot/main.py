@@ -101,22 +101,8 @@ for testing_image_file in os.listdir("../Testing"):
             training_img_data = preprocess_input(training_img_data)
             vgg_feature_2 = model.predict(training_img_data)
             vgg_feature_2= np.array(vgg_feature_2[0])
-            #HOG
-    #        hog_fd = get_hog_vec(x,i+'_'+img)
-            #LBP
-    #        img_bgr = cv2.imread('../Gait Energy Image/GEI/'+i+'/'+img, 1)
-    #        height, width, _ = img_bgr.shape
-    #        lbp_fv = []
-    #        img_gray = cv2.cvtColor(img_bgr,cv2.COLOR_BGR2GRAY)
-    #        img_lbp = np.zeros((height, width),np.uint8)
-    #        for a in range(0, height):
-    #            for b in range(0, width):
-    #                img_lbp[a, b] = lbp_calculated_pixel(img_gray, a, b)
-    #                lbp_fv.append(img_lbp[a, b])
-    #        o2 = np.append(o2,hog_fd)
-    #        o2 = np.append(o2,lbp_fv)
             val = sqrt(sum( (vgg_feature_1 - vgg_feature_2)**2))
-            # print(val)
+            print(testing_image_file,"---",img,"--->",val)
             if val<best_val:
                 best_val = val
                 best=i

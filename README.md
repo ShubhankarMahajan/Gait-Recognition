@@ -1,6 +1,6 @@
 # One Shot Learning Algorithm for Gait Recognition
-> Comment this and the link once done:
-> Reference: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+<!-- > Comment this and the link once done:
+> Reference: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax -->
 > ## Gait Recognition
 Everyone's walking style (gait) is unique, and it has been shown that both humans and computers are very good at recognizing known gait patterns. This can be used as a biometric form that can be utilized to effectively recognize a person by his/her walking style. Over the decades, gait analysis has been successfully used in different domains, including biometrics and posture analysis for healthcare applications. It has also been used in human psychology where gait analysis using point lights employed for recognition of emotional patterns. The same idea was extended and ultimately resulted in the development of gait signatures through which the identification of individuals can be performed.
 > ## One Shot Learning
