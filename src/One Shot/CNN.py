@@ -24,7 +24,7 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 # Block 2
 model.add(Conv2D(128, kernel_size=(3, 3), strides=1, activation='relu', padding='VALID'))
 model.add(Conv2D(128, kernel_size=(3, 3), strides=1, activation='relu', padding='VALID'))
-model.add(AveragePooling2D(pool_size=(19, 19)))
+model.add(9(pool_size=(19, 19)))
 
 # set of FC => RELU layers
 model.add(Flatten())
